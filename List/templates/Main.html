@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+{% extends 'Base.html' %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ShoppingList</title>
+    <script src="{% static 'list.js' %}"></script>
+    <style>
+        .btn{
+        position: absolute;
+        border:none;
+		margin-left: -20px;
+		background-color: transparent;
+		outline: none;
+		margin-right:15px;
+		width:10px;
+		height:30px;
+        }
+
+    </style>
+
+</head>
+<body>
+    {% block content%}
+    <div class="row mt-4">
+        <div class="col">
+            <h2 style="margin-bottom:30px;"> Add items </h2>
+
+            <form class="form-inline" action="addlist/" method="post">
+                <div class=" form-div">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" >
+                        Items
+                        <span class="caret"></span></button>
+                    <ul class=" item dropdown-menu" style="width: 5%;">
+
+                        <li name="item1" style="margin-left:15px;" > <img src="https://img.icons8.com/dusk/64/000000/bread.png" width="20" height="20" style="margin-right: 5px"><span>Bread</span></li>
+
+
+                        <li name="item2"  style="margin-left:15px;"><img src="https://img.icons8.com/plasticine/100/000000/pizza.png"width="20" height="20" style="margin-right: 5px" ></i><span>Pizza</span></i></li>
+
+                        <li name="item3"  style="margin-left:15px;"><img src="https://img.icons8.com/doodle/48/000000/apple.png" width="20" height="20" style="margin-right: 5px"><span>Apple</span></li>
+                        <li name="item4"  style="margin-left:15px;"><img src="https://img.icons8.com/plasticine/100/000000/banana.png" width="20" height="20" style="margin-right: 5px"><span>Banana</span></li>
+                        <li name="item5"  style="margin-left:15px;" ><img src="https://img.icons8.com/color/48/000000/milk-bottle.png" width="20" height="20" style="margin-right: 5px"><span>Milk</span></li>
+                        <li name="item6" style="margin-left:15px;"><img src="https://img.icons8.com/carbon-copy/100/000000/eggs.png" width="20" height="20" style="margin-right: 5px"><span>Eggs</span></li>
+                        <li name="item7"   style="margin-left:15px;"><img src="https://img.icons8.com/cotton/64/000000/thanksgiving-turkey.png" width="20" height="20" style="margin-right: 5px"><span>Chicken</span></li>
+                        <li name="item8"  style="margin-left:15px;"><img src="https://img.icons8.com/doodle/48/000000/cheese--v1.png" width="20" height="20" style="margin-right: 5px"><span>Cheese</span></li>
+                        <li name="item9"  style="margin-left:15px;"><img src="https://img.icons8.com/plasticine/100/000000/chocolate-bar.png" width="20" height="20" style="margin-right: 5px"><span>Chocolate</span></li>
+                        <li name="item10"  style="margin-left:15px;"><img src="https://img.icons8.com/dusk/64/000000/cake.png" width="20" height="20" style="margin-right: 5px"><span>Cake</span></li>
+                    </ul>
+                </div>
+                <script  type="text/javascript">
+
+                    var lis = document.querySelectorAll('.item li');
+                    lis.forEach(function(el) {
+                    el.addEventListener('click', onClick, false);
+                    })
+
+                    function onClick(e) {
+                    var li = e.currentTarget;
+                    var span = li.querySelector('span');
+                     var elem = span.innerHTML;
+                    document.getElementById('item').value="";
+                    document.getElementById('item').value=elem;
+                    }
+                </script>
+                <style>
+                 ul{
+                    cursor:pointer;
+                    }
+                </style>
+
+                {% csrf_token %}
+                <input type="text" name="item" class="form-control " id="item" placeholder="Item Name " style="width: 25%; margin-left:15px;" value="{{itm1}}">
+                <input type="number" class="form-control" name="quantity"  placeholder="Quantity" min="1" max="100" style="margin-right:15px;margin-left:15px;width:105px;" >
+                <button type="submit" class="btn btn-primary">Add</button>
+
+            </form>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <ul class="list-group" style="width:400px;">
+                {% for i in items%}
+                <li class="list-group-item ">
+                    <form class="form-inline" method="post" action="save_state/{{i.id}}">
+                        {% csrf_token %}
+
+                        <button type="submit" class="btn" class="custom-control-input" ><input type="checkbox" id="{{i.id}}"name="completed"style="float:left; margin-right:15px; " {% if i.check is True %} checked{% endif %} ></button>
+
+                    <input type="number"  name="quant" min="1" max="100" value="{{i.quantity}}" style=" width:50px; float:left; margin-right:15px;" readonly>
+                        <label style="width:50%;">{{i.item}}</label>
+                    <div class="float-right" >
+                        <button type="submit" method="post" formaction="delete/{{i.id}}/" class="btn btn-sm btn-danger" style="margin-left:20px;"> <i class="fa fa-trash" style="margin-right:2px; "></i></button>
+                    </div>
+                    </form>
+
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    {% endblock%}
+
+</body>
+</html>
